@@ -40,7 +40,7 @@ public class SplashFragment extends Fragment {
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                TimeUnit.SECONDS.sleep(2);
+                TimeUnit.SECONDS.sleep(4);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

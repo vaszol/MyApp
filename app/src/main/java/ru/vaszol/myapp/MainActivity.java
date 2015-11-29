@@ -1,21 +1,27 @@
 package ru.vaszol.myapp;
 
-import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
+
+import io.vov.vitamio.LibsChecker;
+import io.vov.vitamio.MediaPlayer;
+import io.vov.vitamio.widget.MediaController;
+import io.vov.vitamio.widget.VideoView;
 
 public class MainActivity extends AppCompatActivity {
 
     FragmentManager fragmentManager;
     PreferenceHelper preferenceHelper;
+
+    private String pathToFileOrUrl= "http";
+    private VideoView mVideoView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +44,32 @@ public class MainActivity extends AppCompatActivity {
         fragmentManager = getFragmentManager();
         runSplash();
 
+        if (!LibsChecker.checkVitamioLibs(this))
+            return;
 
+        mVideoView = (VideoView) findViewById(R.id.surface_view);
+
+        if (pathToFileOrUrl == "") {
+            Toast.makeText(this, "Please set the video path for your media file", Toast.LENGTH_LONG).show();
+            return;
+        } else {
+
+            /*
+             * Alternatively,for streaming media you can use
+             * mVideoView.setVideoURI(Uri.parse(URLstring));
+             */
+            mVideoView.setVideoPath(pathToFileOrUrl);
+            mVideoView.setMediaController(new MediaController(this));
+            mVideoView.requestFocus();
+
+            mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mediaPlayer) {
+                    // optional need Vitamio 4.0
+                    mediaPlayer.setPlaybackSpeed(1.0f);
+                }
+            });
+        }
     }
 
     @Override
@@ -82,5 +113,15 @@ public class MainActivity extends AppCompatActivity {
             toolbar.setTitleTextColor(getResources().getColor(R.color.white));
             setSupportActionBar(toolbar);
         }
+    }
+
+    public void startPlay(View view) {
+        if (!TextUtils.isEmpty(pathToFileOrUrl)) {
+            mVideoView.setVideoPath(pathToFileOrUrl);
+        }
+    }
+
+    public void openVideo(View View) {
+        mVideoView.setVideoPath(pathToFileOrUrl);
     }
 }
