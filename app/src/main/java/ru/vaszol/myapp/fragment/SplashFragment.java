@@ -1,4 +1,4 @@
-package ru.vaszol.myapp;
+package ru.vaszol.myapp.fragment;
 
 
 import android.app.Fragment;
@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.concurrent.TimeUnit;
+
+import ru.vaszol.myapp.R;
 
 
 /**
@@ -44,7 +46,9 @@ public class SplashFragment extends Fragment {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            getActivity().getFragmentManager().popBackStack();
+            if(getActivity() != null){
+                getActivity().getFragmentManager().popBackStack();
+            }
             return null;
         }
     }
